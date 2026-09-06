@@ -1,5 +1,6 @@
 package com.example.studentmanagementspring.service;
 
+import com.example.studentmanagementspring.exception.StudentNotFoundException;
 import com.example.studentmanagementspring.model.Student;
 import org.springframework.stereotype.Service;
 
@@ -8,19 +9,10 @@ import java.util.*;
 @Service
 public class StudentService {
 
-    public Student getStudents() {
-        return new Student(
-                1,
-                "Ali",
-                "Valiyev",
-                85.5,
-                2
-        );
-    }
+    private final List<Student> students = new ArrayList<>();
+    private Integer nextId = 5;
 
-    public List<Student> getAllStudents() {
-        List<Student> students = new ArrayList<>();
-
+    public StudentService() {
         students.add(new Student(
                 1,
                 "Rustam",
@@ -42,7 +34,42 @@ public class StudentService {
                 74.6,
                 4
         ));
+    }
 
+
+    public Student getStudents() {
+        return new Student(
+                1,
+                "Ali",
+                "Valiyev",
+                85.5,
+                2
+        );
+    }
+
+    public List<Student> getAllStudents() {
         return students;
     }
+
+    public Student getStudentById(Integer id) {
+        for (Student s : getAllStudents()) {
+            if (Objects.equals(s.getId(), id)) {
+                return s;
+            }
+        }
+
+        throw new StudentNotFoundException("Student with id " + id + " not found");
+    }
+
+    public Student createStudent(Student student) {
+
+        student.setId(nextId);
+        nextId++;
+
+        students.add(student);
+
+        return student;
+    }
+
+
 }
