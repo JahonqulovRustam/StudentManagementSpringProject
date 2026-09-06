@@ -86,4 +86,16 @@ public class StudentService {
 
         throw new StudentNotFoundException("Student with id " + id + " not found");
     }
+	
+	public void deleteStudentById(Integer id) {
+		
+		boolean removed = students.removeIf(
+				student -> Objects.equals(student.getId(), id)
+		);
+		
+		if (!removed) {
+			throw new StudentNotFoundException("Student with id " + id + " not found");
+		}
+	}
+	
 }
