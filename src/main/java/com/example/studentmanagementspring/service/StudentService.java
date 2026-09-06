@@ -71,5 +71,19 @@ public class StudentService {
         return student;
     }
 
+    public Student updateStudentInfoById(Integer id, Student updatedStudent) {
 
+        for (Student student : students) {
+            if (Objects.equals(student.getId(), id)) {
+                student.setName(updatedStudent.getName());
+                student.setSurname(updatedStudent.getSurname());
+                student.setGrade(updatedStudent.getGrade());
+                student.setLevel(updatedStudent.getLevel());
+
+                return student;
+            }
+        }
+
+        throw new StudentNotFoundException("Student with id " + id + " not found");
+    }
 }
