@@ -35,17 +35,7 @@ public class StudentService {
                 4
         ));
     }
-
-
-    public Student getStudents() {
-        return new Student(
-                1,
-                "Ali",
-                "Valiyev",
-                85.5,
-                2
-        );
-    }
+	
 
     public List<Student> getAllStudents() {
         return students;
