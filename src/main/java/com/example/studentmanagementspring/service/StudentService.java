@@ -1,5 +1,7 @@
 package com.example.studentmanagementspring.service;
 
+import com.example.studentmanagementspring.dto.StudentRequest;
+import com.example.studentmanagementspring.dto.StudentResponse;
 import com.example.studentmanagementspring.exception.StudentNotFoundException;
 import com.example.studentmanagementspring.model.Student;
 import com.example.studentmanagementspring.repository.StudentRepository;
@@ -17,36 +19,91 @@ public class StudentService {
 	}
 	
 	
-	public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+	public List<StudentResponse> getAllStudents() {
+        
+        List<Student> students = studentRepository.findAll();
+		List<StudentResponse> studentResponseList = new ArrayList<>();
+		for (Student student : students) {
+			
+			StudentResponse response = new StudentResponse();
+			
+			response.setId(student.getId());
+			response.setName(student.getName());
+			response.setSurname(student.getSurname());
+			response.setGrade(student.getGrade());
+			response.setLevel(student.getLevel());
+			
+			studentResponseList.add(response);
+		}
+		
+		return studentResponseList;
     }
 
-    public Student getStudentById(Integer id) {
+    public StudentResponse getStudentById(Integer id) {
     
-		return studentRepository.
+		Student student = new Student();
+		
+		student = studentRepository.
 				findById(id).
 				orElseThrow(() -> new StudentNotFoundException(
 				"Student with id " + id + " not found"
 		));
+		
+		StudentResponse response = new StudentResponse();
+		
+		response.setId(student.getId());
+		response.setName(student.getName());
+		response.setSurname(student.getSurname());
+		response.setGrade(student.getGrade());
+		response.setLevel(student.getLevel());
+		
+		return response;
+	}
+
+    public StudentResponse createStudent(StudentRequest request) {
+		
+		Student student = new Student();
+		
+		student.setName(request.getName());
+		student.setSurname(request.getSurname());
+		student.setGrade(request.getGrade());
+		student.setLevel(request.getLevel());
+		
+		Student savedStudent = studentRepository.save(student);
+		
+		StudentResponse response = new StudentResponse();
+		
+		response.setId(savedStudent.getId());
+		response.setName(savedStudent.getName());
+		response.setSurname(savedStudent.getSurname());
+		response.setGrade(savedStudent.getGrade());
+		response.setLevel(savedStudent.getLevel());
+		
+		return response;
     }
 
-    public Student createStudent(Student student) {
-
-        return studentRepository.save(student);
-    }
-
-    public Student updateStudentInfoById(Integer id, Student updatedStudent) {
+    public StudentResponse updateStudentInfoById(Integer id, StudentRequest request) {
 		
 		Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(
 				"Student with id " + id + " not found"
 		));
 		
-		student.setName(updatedStudent.getName());
-		student.setSurname(updatedStudent.getSurname());
-		student.setGrade(updatedStudent.getGrade());
-		student.setLevel(updatedStudent.getLevel());
+		student.setName(request.getName());
+		student.setSurname(request.getSurname());
+		student.setGrade(request.getGrade());
+		student.setLevel(request.getLevel());
 		
-		return studentRepository.save(student);
+		Student savedStudent = studentRepository.save(student);
+		
+		StudentResponse response = new StudentResponse();
+		
+		response.setId(savedStudent.getId());
+		response.setName(savedStudent.getName());
+		response.setSurname(savedStudent.getSurname());
+		response.setGrade(savedStudent.getGrade());
+		response.setLevel(savedStudent.getLevel());
+		
+		return response;
     }
 
 	public void deleteStudentById(Integer id) {

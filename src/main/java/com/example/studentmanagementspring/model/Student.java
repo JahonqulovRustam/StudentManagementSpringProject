@@ -2,9 +2,13 @@ package com.example.studentmanagementspring.model;
 
 
 import jakarta.persistence.*;
+import lombok.*;
+
 
 @Entity
 @Table(name = "students")
+@Getter
+@Setter
 public class Student {
 	
 	@Id
@@ -25,45 +29,5 @@ public class Student {
         this.surname = surname;
         this.grade = grade;
         this.level = level;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setGrade(Double grade) {
-        this.grade = grade;
-    }
-
-    public Double getGrade() {
-        return grade;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
-    public Integer getLevel() {
-        return level;
     }
 }
