@@ -1,6 +1,14 @@
 package com.example.studentmanagementspring.model;
 
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "students")
 public class Student {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String surname;

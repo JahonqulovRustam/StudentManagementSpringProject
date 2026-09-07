@@ -2,90 +2,60 @@ package com.example.studentmanagementspring.service;
 
 import com.example.studentmanagementspring.exception.StudentNotFoundException;
 import com.example.studentmanagementspring.model.Student;
+import com.example.studentmanagementspring.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class StudentService {
-
-    private final List<Student> students = new ArrayList<>();
-    private Integer nextId = 5;
-
-    public StudentService() {
-        students.add(new Student(
-                1,
-                "Rustam",
-                "Jahonqulov",
-                92.3,
-                2
-        ));
-        students.add(new Student(
-                2,
-                "Amin",
-                "To'xtayev",
-                60.0,
-                2
-        ));
-        students.add(new Student(
-                4,
-                "Kamron",
-                "Hasanov",
-                74.6,
-                4
-        ));
-    }
 	
-
-    public List<Student> getAllStudents() {
-        return students;
+	private final StudentRepository studentRepository;
+	
+	public StudentService(StudentRepository studentRepository) {
+		this.studentRepository = studentRepository;
+	}
+	
+	
+	public List<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
     public Student getStudentById(Integer id) {
-        for (Student s : getAllStudents()) {
-            if (Objects.equals(s.getId(), id)) {
-                return s;
-            }
-        }
-
-        throw new StudentNotFoundException("Student with id " + id + " not found");
+    
+		return studentRepository.
+				findById(id).
+				orElseThrow(() -> new StudentNotFoundException(
+				"Student with id " + id + " not found"
+		));
     }
 
     public Student createStudent(Student student) {
 
-        student.setId(nextId);
-        nextId++;
-
-        students.add(student);
-
-        return student;
+        return studentRepository.save(student);
     }
 
     public Student updateStudentInfoById(Integer id, Student updatedStudent) {
-
-        for (Student student : students) {
-            if (Objects.equals(student.getId(), id)) {
-                student.setName(updatedStudent.getName());
-                student.setSurname(updatedStudent.getSurname());
-                student.setGrade(updatedStudent.getGrade());
-                student.setLevel(updatedStudent.getLevel());
-
-                return student;
-            }
-        }
-
-        throw new StudentNotFoundException("Student with id " + id + " not found");
+		
+		Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(
+				"Student with id " + id + " not found"
+		));
+		
+		student.setName(updatedStudent.getName());
+		student.setSurname(updatedStudent.getSurname());
+		student.setGrade(updatedStudent.getGrade());
+		student.setLevel(updatedStudent.getLevel());
+		
+		return studentRepository.save(student);
     }
-	
+
 	public void deleteStudentById(Integer id) {
 		
-		boolean removed = students.removeIf(
-				student -> Objects.equals(student.getId(), id)
-		);
+		Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(
+				"Student with id " + id + " not found"
+		));
 		
-		if (!removed) {
-			throw new StudentNotFoundException("Student with id " + id + " not found");
-		}
+		studentRepository.delete(student);
 	}
-	
+
 }
