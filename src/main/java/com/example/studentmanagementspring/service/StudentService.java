@@ -3,6 +3,7 @@ package com.example.studentmanagementspring.service;
 import com.example.studentmanagementspring.dto.StudentRequest;
 import com.example.studentmanagementspring.dto.StudentResponse;
 import com.example.studentmanagementspring.exception.StudentNotFoundException;
+import com.example.studentmanagementspring.mapper.StudentMapper;
 import com.example.studentmanagementspring.model.Student;
 import com.example.studentmanagementspring.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.*;
 public class StudentService {
 	
 	private final StudentRepository studentRepository;
+	private final StudentMapper studentMapper;
 	
-	public StudentService(StudentRepository studentRepository) {
+	public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
 		this.studentRepository = studentRepository;
+		this.studentMapper = studentMapper;
 	}
 	
 	
@@ -23,17 +26,10 @@ public class StudentService {
         
         List<Student> students = studentRepository.findAll();
 		List<StudentResponse> studentResponseList = new ArrayList<>();
+		
 		for (Student student : students) {
 			
-			StudentResponse response = new StudentResponse();
-			
-			response.setId(student.getId());
-			response.setName(student.getName());
-			response.setSurname(student.getSurname());
-			response.setGrade(student.getGrade());
-			response.setLevel(student.getLevel());
-			
-			studentResponseList.add(response);
+			studentResponseList.add(studentMapper.toResponse(student));
 		}
 		
 		return studentResponseList;
@@ -49,37 +45,16 @@ public class StudentService {
 				"Student with id " + id + " not found"
 		));
 		
-		StudentResponse response = new StudentResponse();
-		
-		response.setId(student.getId());
-		response.setName(student.getName());
-		response.setSurname(student.getSurname());
-		response.setGrade(student.getGrade());
-		response.setLevel(student.getLevel());
-		
-		return response;
+		return studentMapper.toResponse(student);
 	}
 
     public StudentResponse createStudent(StudentRequest request) {
 		
-		Student student = new Student();
-		
-		student.setName(request.getName());
-		student.setSurname(request.getSurname());
-		student.setGrade(request.getGrade());
-		student.setLevel(request.getLevel());
-		
-		Student savedStudent = studentRepository.save(student);
-		
-		StudentResponse response = new StudentResponse();
-		
-		response.setId(savedStudent.getId());
-		response.setName(savedStudent.getName());
-		response.setSurname(savedStudent.getSurname());
-		response.setGrade(savedStudent.getGrade());
-		response.setLevel(savedStudent.getLevel());
-		
-		return response;
+		return studentMapper.toResponse(
+				studentRepository.save(
+						studentMapper.toEntity(request)
+				)
+		);
     }
 
     public StudentResponse updateStudentInfoById(Integer id, StudentRequest request) {
@@ -88,22 +63,11 @@ public class StudentService {
 				"Student with id " + id + " not found"
 		));
 		
-		student.setName(request.getName());
-		student.setSurname(request.getSurname());
-		student.setGrade(request.getGrade());
-		student.setLevel(request.getLevel());
+		studentMapper.updateEntity(student, request);
 		
 		Student savedStudent = studentRepository.save(student);
 		
-		StudentResponse response = new StudentResponse();
-		
-		response.setId(savedStudent.getId());
-		response.setName(savedStudent.getName());
-		response.setSurname(savedStudent.getSurname());
-		response.setGrade(savedStudent.getGrade());
-		response.setLevel(savedStudent.getLevel());
-		
-		return response;
+		return studentMapper.toResponse(savedStudent);
     }
 
 	public void deleteStudentById(Integer id) {
