@@ -1,9 +1,15 @@
 package com.example.studentmanagementspring.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -13,4 +19,26 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleStudentNotFound(StudentNotFoundException e) {
         return new ErrorResponse(e.getMessage(), 404);
     }
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ErrorResponse handleValidationException(
+			MethodArgumentNotValidException e) {
+		
+		List<FieldError> errors = e.getBindingResult().getFieldErrors();
+		Map<String, String> validationErrors = new HashMap<>();
+		
+		for (FieldError error : errors) {
+			String field = error.getField();
+			String message = error.getDefaultMessage();
+			
+			validationErrors.put(field, message);
+		}
+		
+		return new ErrorResponse(
+				"Validation failed",
+				400,
+				validationErrors
+		);
+	}
 }
