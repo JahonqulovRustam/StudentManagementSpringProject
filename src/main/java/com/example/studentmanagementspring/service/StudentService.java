@@ -6,6 +6,8 @@ import com.example.studentmanagementspring.exception.StudentNotFoundException;
 import com.example.studentmanagementspring.mapper.StudentMapper;
 import com.example.studentmanagementspring.model.Student;
 import com.example.studentmanagementspring.repository.StudentRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -77,6 +79,24 @@ public class StudentService {
 		));
 		
 		studentRepository.delete(student);
+	}
+	
+	public Page<StudentResponse> getStudents(Pageable pageable) {
+		
+		Page<Student> students = studentRepository.findAll(pageable);
+		
+		return students.map(studentMapper::toResponse);
+	}
+	
+	public Page<StudentResponse> searchByName(String query, Pageable pageable) {
+		
+		Page<Student> students = studentRepository.findByNameContainingIgnoreCaseOrSurnameContainingIgnoreCase(
+				query,
+				query,
+				pageable
+		);
+		
+		return students.map(studentMapper::toResponse);
 	}
 
 }

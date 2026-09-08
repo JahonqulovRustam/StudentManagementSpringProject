@@ -4,6 +4,8 @@ import com.example.studentmanagementspring.dto.*;
 import com.example.studentmanagementspring.model.Student;
 import com.example.studentmanagementspring.service.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +20,8 @@ public class StudentController {
     }
 	
 	@GetMapping("/students")
-	public List<StudentResponse> getAllStudents() {
-		
-		return studentService.getAllStudents();
+	public Page<StudentResponse> getAllStudents(Pageable pageable) {
+		return studentService.getStudents(pageable);
 	}
 	
 	@GetMapping("/students/{id}")
@@ -45,5 +46,10 @@ public class StudentController {
 	@DeleteMapping("/students/{id}")
 	public void deleteStudentById(@PathVariable Integer id) {
 		studentService.deleteStudentById(id);
+	}
+	
+	@GetMapping("/students/search")
+	public Page<StudentResponse> searchByName(@RequestParam String name, Pageable pageable) {
+		return studentService.searchByName(name, pageable);
 	}
 }
