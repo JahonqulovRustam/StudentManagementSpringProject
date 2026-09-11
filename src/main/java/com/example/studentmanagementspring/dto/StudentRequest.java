@@ -8,9 +8,11 @@ import lombok.*;
 public class StudentRequest {
 	
 	@NotBlank(message = "Name is required")
+	@Size(max = 50, message = "Name must be at most 50 characters")
 	private String name;
 	
 	@NotBlank(message = "Surname is required")
+	@Size(max = 50, message = "Surname must be at most 50 characters")
 	private String surname;
 	
 	@NotNull(message = "Grade is required")

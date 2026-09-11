@@ -1,5 +1,7 @@
 package com.example.studentmanagementspring.service;
 
+import com.example.studentmanagementspring.*;
+import com.example.studentmanagementspring.dto.StudentPatchRequest;
 import com.example.studentmanagementspring.dto.StudentRequest;
 import com.example.studentmanagementspring.dto.StudentResponse;
 import com.example.studentmanagementspring.exception.StudentNotFoundException;
@@ -98,5 +100,35 @@ public class StudentService {
 		
 		return students.map(studentMapper::toResponse);
 	}
-
+	
+	public StudentResponse patchUpdateStudentInfoById(
+			Integer id,
+			StudentPatchRequest patchRequest) {
+		
+		Student student = studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(
+				"Student with id " + id + " not found"
+		));
+		
+		//grade
+		if (patchRequest.getGrade() != null) {
+			student.setGrade(patchRequest.getGrade());
+		}
+		
+		//level
+		if (patchRequest.getLevel() != null) {
+			student.setLevel(patchRequest.getLevel());
+		}
+		
+		//name
+		if (patchRequest.getName() != null) {
+			student.setName(patchRequest.getName());
+		}
+		
+		//surname
+		if (patchRequest.getSurname() != null) {
+			student.setSurname(patchRequest.getSurname());
+		}
+		
+		return studentMapper.toResponse(studentRepository.save(student));
+	}
 }
