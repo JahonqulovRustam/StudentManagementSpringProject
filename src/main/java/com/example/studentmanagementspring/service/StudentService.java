@@ -1,12 +1,14 @@
 package com.example.studentmanagementspring.service;
 
-import com.example.studentmanagementspring.*;
 import com.example.studentmanagementspring.dto.StudentPatchRequest;
 import com.example.studentmanagementspring.dto.StudentRequest;
 import com.example.studentmanagementspring.dto.StudentResponse;
+import com.example.studentmanagementspring.exception.GroupNotFoundException;
 import com.example.studentmanagementspring.exception.StudentNotFoundException;
 import com.example.studentmanagementspring.mapper.StudentMapper;
+import com.example.studentmanagementspring.model.Group;
 import com.example.studentmanagementspring.model.Student;
+import com.example.studentmanagementspring.repository.GroupRepository;
 import com.example.studentmanagementspring.repository.StudentRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,10 +20,12 @@ import java.util.*;
 public class StudentService {
 	
 	private final StudentRepository studentRepository;
+	private final GroupRepository groupRepository;
 	private final StudentMapper studentMapper;
 	
-	public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
+	public StudentService(StudentRepository studentRepository, GroupRepository groupRepository, StudentMapper studentMapper) {
 		this.studentRepository = studentRepository;
+		this.groupRepository = groupRepository;
 		this.studentMapper = studentMapper;
 	}
 	
@@ -41,7 +45,7 @@ public class StudentService {
 
     public StudentResponse getStudentById(Integer id) {
     
-		Student student = new Student();
+		Student student;
 		
 		student = studentRepository.
 				findById(id).
@@ -128,6 +132,21 @@ public class StudentService {
 		if (patchRequest.getSurname() != null) {
 			student.setSurname(patchRequest.getSurname());
 		}
+		
+		return studentMapper.toResponse(studentRepository.save(student));
+	}
+	
+	public StudentResponse assignStudentToGroup(Integer studentId, Integer groupId) {
+		
+		Student student = studentRepository.findById(studentId).orElseThrow(
+				() -> new StudentNotFoundException("Student with id " + studentId + " not found")
+		);
+		
+		Group group = groupRepository.findById(groupId).orElseThrow(
+				() -> new GroupNotFoundException("Group with id " + groupId + " not found")
+		);
+		
+		student.setGroup(group);
 		
 		return studentMapper.toResponse(studentRepository.save(student));
 	}

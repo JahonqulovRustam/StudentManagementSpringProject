@@ -1,6 +1,7 @@
 package com.example.studentmanagementspring.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,10 +15,19 @@ public class Student {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+	
     private String name;
-    private String surname;
-    private Double grade;
-    private Integer level;
+    
+	private String surname;
+ 
+	private Double grade;
+ 
+	private Integer level;
+	
+	@ManyToOne
+	@JoinColumn(name = "group_id")
+	@JsonIgnore
+	private Group group;
 
     public Student() {
 

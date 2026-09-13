@@ -59,4 +59,11 @@ public class StudentController {
 	public ResponseEntity<StudentResponse> patchUpdateStudentInfoById(@PathVariable Integer id, @Valid @RequestBody StudentPatchRequest patchRequest) {
 		return ResponseEntity.ok(studentService.patchUpdateStudentInfoById(id, patchRequest));
 	}
+	
+	@PutMapping("/students/{studentId}/group/{groupId}")
+	public ResponseEntity<StudentResponse> assignStudentToGroup(@PathVariable Integer studentId, @PathVariable Integer groupId) {
+		
+		return ResponseEntity.ok(studentService.assignStudentToGroup(studentId, groupId));
+	}
+	
 }

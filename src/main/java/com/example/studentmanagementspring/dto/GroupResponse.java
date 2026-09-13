@@ -1,26 +1,17 @@
 package com.example.studentmanagementspring.dto;
 
+
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
 
-@JsonPropertyOrder({
-		"id",
-		"name",
-		"surname",
-		"grade",
-		"level"
-})
-
 @Getter
 @Setter
-public class StudentResponse {
-	
+@JsonPropertyOrder({
+		"id",
+		"name"
+})
+
+public class GroupResponse {
 	private Integer id;
 	private String name;
-	private String surname;
-	private Double grade;
-	private Integer level;
-	
-	private GroupResponse group;
-	
 }
