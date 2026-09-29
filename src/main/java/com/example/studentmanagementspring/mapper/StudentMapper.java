@@ -18,7 +18,9 @@ public class StudentMapper {
 		response.setSurname(student.getSurname());
 		response.setGrade(student.getGrade());
 		response.setLevel(student.getLevel());
-		response.setGroup(toGroupResponse(student.getGroup()));
+		if (student.getGroup() != null) {
+			response.setGroup(toGroupResponse(student.getGroup()));
+		}
 		
 		return response;
 	}

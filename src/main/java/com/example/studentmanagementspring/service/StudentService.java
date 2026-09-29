@@ -28,20 +28,6 @@ public class StudentService {
 		this.groupRepository = groupRepository;
 		this.studentMapper = studentMapper;
 	}
-	
-	
-	public List<StudentResponse> getAllStudents() {
-        
-        List<Student> students = studentRepository.findAll();
-		List<StudentResponse> studentResponseList = new ArrayList<>();
-		
-		for (Student student : students) {
-			
-			studentResponseList.add(studentMapper.toResponse(student));
-		}
-		
-		return studentResponseList;
-    }
 
     public StudentResponse getStudentById(Integer id) {
     
@@ -147,6 +133,17 @@ public class StudentService {
 		);
 		
 		student.setGroup(group);
+		
+		return studentMapper.toResponse(studentRepository.save(student));
+	}
+	
+	public StudentResponse removeStudentFromGroup(Integer studentId) {
+		
+		Student student = studentRepository.findById(studentId).orElseThrow(
+				() -> new StudentNotFoundException("Student with id " + studentId + " not found")
+		);
+		
+		student.setGroup(null);
 		
 		return studentMapper.toResponse(studentRepository.save(student));
 	}

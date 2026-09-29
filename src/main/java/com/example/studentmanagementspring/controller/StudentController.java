@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@RequestMapping("/students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -19,22 +20,22 @@ public class StudentController {
         this.studentService = studentService;
     }
 	
-	@GetMapping("/students")
+	@GetMapping
 	public Page<StudentResponse> getAllStudents(Pageable pageable) {
 		return studentService.getStudents(pageable);
 	}
 	
-	@GetMapping("/students/{id}")
+	@GetMapping("/{id}")
 	public StudentResponse getStudentById(@PathVariable Integer id) {
 		return studentService.getStudentById(id);
 	}
 
-    @PostMapping("/students")
+    @PostMapping
     public ResponseEntity<StudentResponse> create(@Valid @RequestBody StudentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(request));
     }
 	
-	@PutMapping("/students/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<StudentResponse> updateStudentInfoById(
 			@PathVariable Integer id,
 			@Valid @RequestBody StudentRequest request) {
@@ -42,7 +43,7 @@ public class StudentController {
 		return ResponseEntity.ok(studentService.updateStudentInfoById(id, request));
 	}
 
-	@DeleteMapping("/students/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteStudentById(@PathVariable Integer id) {
 		
 		studentService.deleteStudentById(id);
@@ -50,20 +51,26 @@ public class StudentController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 	
-	@GetMapping("/students/search")
+	@GetMapping("/search")
 	public Page<StudentResponse> searchByName(@RequestParam String name, Pageable pageable) {
 		return studentService.searchByName(name, pageable);
 	}
 	
-	@PatchMapping("/students/{id}")
+	@PatchMapping("/{id}")
 	public ResponseEntity<StudentResponse> patchUpdateStudentInfoById(@PathVariable Integer id, @Valid @RequestBody StudentPatchRequest patchRequest) {
 		return ResponseEntity.ok(studentService.patchUpdateStudentInfoById(id, patchRequest));
 	}
 	
-	@PutMapping("/students/{studentId}/group/{groupId}")
+	@PutMapping("/{studentId}/group/{groupId}")
 	public ResponseEntity<StudentResponse> assignStudentToGroup(@PathVariable Integer studentId, @PathVariable Integer groupId) {
 		
 		return ResponseEntity.ok(studentService.assignStudentToGroup(studentId, groupId));
+	}
+	
+	@DeleteMapping("/{studentId}/group")
+	public StudentResponse removeStudentFromGroup(@PathVariable Integer studentId) {
+		
+		return studentService.removeStudentFromGroup(studentId);
 	}
 	
 }

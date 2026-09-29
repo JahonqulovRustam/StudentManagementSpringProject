@@ -4,7 +4,7 @@ package com.example.studentmanagementspring.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "students")
